@@ -120,11 +120,11 @@ bot.load_extension('ext.fun')
 bot.load_extension('ext.help')
 bot.load_extension('jishaku')
 
-
+developer = f.bot_developers
 
 @bot.event
 async def on_ready():
-    activity = discord.Game(name=f"to:helpsで確認{f.admin}", type=3)
+    activity = discord.Game(name=f"to:helpsで確認{f.admin}何かあれば{developer}まで", type=3)
     await bot.change_presence(status=discord.Status.idle, activity=activity)
     print("Bot is ready!")
 
