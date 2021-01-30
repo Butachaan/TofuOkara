@@ -81,36 +81,17 @@ class everyone(commands.Cog):
         else:
             await ctx.send(arg)
 
-    @commands.command(name="source")
-    async def source(self,ctx):
-        embed = discord.Embed(title="ソースコード",description="https://github.com/Butachaan/yuyukochan")
-        await ctx.send(embed=embed)
 
-    @commands.command(name="invite", description="botの招待リンクを表示します")
-    async def invite(self, ctx):
-        """`誰でも`"""
-        user = ctx.message.author
-        embed = discord.Embed(title="invite-bot", color=0xb300ff)
-        embed.set_thumbnail(
-            url="https://images-ext-1.discordapp.net/external/p63_pSyVEDrhWnE2w87v2emUygjr2WA7AvD0m1mRaP8/%3Fsize%3D512/https/cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png")
-        embed.set_footer(text=user.name)
-        embed.add_field(name="__**管理者権限**__",
-                        value="https://discord.com/api/oauth2/authorize?client_id=757807145264611378&permissions=8&scope=bot")
-        embed.add_field(name="__**Moderation機能**__",
-                        value="https://discord.com/api/oauth2/authorize?client_id=757807145264611378&permissions=1544027255&scope=bot")
-        embed.add_field(name="__**最低限**__",
-                        value="https://discord.com/api/oauth2/authorize?client_id=757807145264611378&permissions=70647361&scope=bot")
-        await ctx.send(embed=embed)
 
-    @commands.command(description="サポート鯖の情報です")
+
+    @commands.command(description="お豆腐サーバー")
     async def official(self, ctx):
         """`誰でも`"""
-        embed = discord.Embed(title="Yuyuko Support Server", url="https://discord.gg/xcwZYny",
-                              description="幽々子のサポートサーバーです", color=0xb300ff)
+        embed = discord.Embed(title="Zosuserver", url="https://discord.gg/589NpX9",description="豆腐のサーバー", color=0x00aaff)
         embed.set_thumbnail(
-            url="https://images-ext-1.discordapp.net/external/p63_pSyVEDrhWnE2w87v2emUygjr2WA7AvD0m1mRaP8/%3Fsize%3D512/https/cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png")
+            url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024")
         embed.add_field(name="何かあればこちらへ", value="by creater", inline=True)
-        embed.set_footer(text="幽々子")
+        embed.set_footer(text="豆腐")
         await ctx.send(embed=embed)
 
     @commands.command()

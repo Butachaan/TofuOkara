@@ -1,6 +1,7 @@
-# yuyukochan
-名前:幽々子Bot
-開発者:Butachaan
+
+名前:お豆腐Bot
+開発者:ゾス鯖運営
 
 __**Hi**__ ```
-I'm yuyuko's developer```
+I'm Tofu``
+``I'm admin in Zosuserver``

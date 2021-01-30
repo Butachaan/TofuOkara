@@ -83,7 +83,7 @@ class infoCog(commands.Cog):
                         len(list(filter(lambda m: str(m.status) == "dnd", guild.members))),
                         len(list(filter(lambda m: str(m.status) == "offline", guild.members)))]
 
-            e = discord.Embed(title="サーバー検索", description=f"{guild.name}の情報を表示しています", color=0x05deff)
+            e = discord.Embed(title="サーバー検索", description=f"{guild.name}の情報を表示しています", color=0x00aaff)
             e.add_field(name="サーバー名", value=f"{guild.name}({str(guild.id)})")
 
         if guild.icon_url is not None:
@@ -142,15 +142,9 @@ class infoCog(commands.Cog):
         """`誰でも`"""
         pythonVersion = platform.python_version()
         dpyVersion = discord.__version__
-        channels = str(len(set(self.bot.get_all_channels())))
-        total_members = [x.id for x in self.bot.get_all_members()]
-        unique_members = set(total_members)
-        if len(total_members) == len(unique_members):
-            member_count = "{:,}".format(len(total_members))
-        else:
-            member_count = "{:,} ({:,} unique)".format(len(total_members), len(unique_members))
 
-        guild_count = "{:,}".format(len(self.bot.guilds))
+
+
         mem = psutil.virtual_memory()
 
         allmem = str(mem.total / 1000000000)[0:3]
@@ -158,16 +152,14 @@ class infoCog(commands.Cog):
         ava = str(mem.available / 1000000000)[0:3]
         memparcent = mem.percent
 
-        embed = discord.Embed(title="幽々子",
-                              url="https://cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png?size=1024",
-                              color=0x5d00ff)
-        embed.set_author(name="y/info")
-        embed.add_field(name="サーバー数", value=guild_count)
-        embed.add_field(name="ユーザー数", value=member_count)
+        embed = discord.Embed(title="おとうふ",
+                              url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024",
+                              color=0x00aaff)
+        embed.set_author(name="to:info")
 
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png?size=1024")
-        embed.add_field(name="Channels bot can see:", value=channels)
+            url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024")
+
         embed.add_field(name="discord.pyのバージョン", value=dpyVersion)
         embed.add_field(name="Pythonのバージョン", value=pythonVersion)
         embed.add_field(name="プロセッサ", value="Intel(R) Xeon(R) CPU E5-2660 v3 @ 2.60GHz")
@@ -181,7 +173,7 @@ class infoCog(commands.Cog):
         """`誰でも`"""
 
         user = user or ctx.author
-        e = discord.Embed(color=0xb300ff)
+        e = discord.Embed(color=0x00aaff)
         roles = [r.mention for r in user.roles]
         e.set_author(name="ユーザー情報")
         perms = "`" + "`, `".join(perm for perm, value in user.guild_permissions if value) + "`"
@@ -236,10 +228,10 @@ class infoCog(commands.Cog):
 
     @commands.command()
     async def user(self, ctx, *, user: Union[discord.Member, discord.User] = None):
-        """Shows info about a user."""
+        """`誰でも`"""
 
         user = user or ctx.author
-        e = discord.Embed(title="外部ユーザー情報", color=0x0066ff)
+        e = discord.Embed(title="外部ユーザー情報", color=0x00aaff)
         roles = [role.name.replace('@', '@\u200b') for role in getattr(user, 'roles', [])]
         e.set_author(name=str(user))
         since_created = (ctx.message.created_at - user.created_at).days
@@ -273,7 +265,7 @@ class infoCog(commands.Cog):
         if role is None:
             await ctx.send(ctx._("roleinfo-howto"))
         elif role.guild == ctx.guild:
-            embed = discord.Embed(title=role.name, description=f"id:{role.id}", color=role.colour)
+            embed = discord.Embed(title=role.name, description=f"id:{role.id}", color=0x00aaff)
             embed.add_field(name="別表示", value=role.hoist)
             embed.add_field(name="メンション", value=role.mentionable)
 
@@ -424,7 +416,7 @@ class infoCog(commands.Cog):
                 fetch_from = "コマンド実行メッセージ"
                 msg = ctx.message
 
-        e = discord.Embed(title=f"メッセージ{fetch_from}", descriptio=msg.system_content, color=0x5d00ff)
+        e = discord.Embed(title=f"メッセージ{fetch_from}", descriptio=msg.system_content, color=0x00aaff)
         e.set_author(name=f"{msg.author.display_name}({msg.author.id}){'[bot]' if msg.author.bot else ''}のメッセージ",
                      icon_url=msg.author.avatar_url_as(static_format="png"))
 
@@ -501,7 +493,7 @@ class infoCog(commands.Cog):
             if target.is_news():
                 if "NEWS" in target.guild.features:
                     e = discord.Embed(name="チャンネル情報", description=f"{target.name}(タイプ:アナウンス)\nID:{target.id}",
-                                      color=0x00ff00)
+                                      color=0x00aaff)
                 else:
                     e = discord.Embed(name="チャンネル情報", description=f"{target.name}(タイプ:アナウンス(フォロー不可))\nID:{target.id}")
             else:
@@ -568,6 +560,7 @@ class infoCog(commands.Cog):
             if mbs != "":
                 e.add_field(name=f"所属するチャンネル({len(target.channels)}チャンネル)", value=mbs, inline=False)
             await ctx.reply(embed=e)
+
 
 
 def setup(bot):
