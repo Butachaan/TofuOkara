@@ -142,7 +142,7 @@ class AdminCog(commands.Cog, name="Admin"):
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
-    @commands.is_owner()
+    @commands.has_role("Admin")
     @commands.command(hidden=True)
     async def changestatus(self, ctx, status: str):
         '''Ändert den Online Status vom Bot (BOT OWNER ONLY)'''
@@ -169,18 +169,27 @@ class AdminCog(commands.Cog, name="Admin"):
         em.add_field(name="結果", value=f"{discord.Game(game)}に変わりました")
         await ctx.send(embed=em)
 
-    @commands.is_owner()
-    @commands.command(name="announce", aliases=["ann"], description="アナウンス用")
+    @commands.has_any_role('Staff')
+    @commands.command(name="announce", aliases=["ann"], description="お知らせ")
     async def announce(self, ctx, *, message):
         """```admin```"""
         await ctx.message.delete()
-        em = discord.Embed(title="お知らせ",color=0x00aaff)
+        ch = self.bot.get_channel(406463786053140491)
+        em = discord.Embed(title="お知らせ", color=0x00aaff)
         em.set_author(name="お豆腐",
                       url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024",
                       icon_url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024")
 
         em.description = message
-        await ctx.send(embed=em)
+
+        try:
+            await ch.send(embed=em)
+            await ctx.send("アナウンスしました")
+        except discord.Forbidden:
+            await ctx.send("> 送信できません！\n　botに必要な権限が割り当てられているかどうかを確認してください。")
+        except discord.HTTPException:
+            await ctx.send("> 送信できません！\n　メッセージの送信に失敗しました。")
+
 
     @commands.command()
     @commands.is_owner()
@@ -219,7 +228,7 @@ class AdminCog(commands.Cog, name="Admin"):
         msg += '```'
         await ctx.reply(msg)
 
-    @commands.is_owner()
+    @commands.has_any_role('Staff')
     @commands.command(name="system_shutdown", aliases=["shutdown", "sh"], description="```botを停止します```")
     async def system_shutdown(self, ctx):
         """`admin`"""
