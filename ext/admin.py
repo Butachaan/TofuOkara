@@ -174,10 +174,10 @@ class AdminCog(commands.Cog, name="Admin"):
     async def announce(self, ctx, *, message):
         """```admin```"""
         await ctx.message.delete()
-        em = discord.Embed(title="お知らせ", color=0x5d00ff)
-        em.set_author(name="[y/]幽々子",
-                      url="https://cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png?size=512",
-                      icon_url="https://cdn.discordapp.com/avatars/757807145264611378/f6e2d7ff1f8092409983a77952670eae.png?size=512")
+        em = discord.Embed(title="お知らせ",color=0x00aaff)
+        em.set_author(name="お豆腐",
+                      url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024",
+                      icon_url="https://cdn.discordapp.com/avatars/803281008703176706/9327faa387255c25d6cb69d70a839f51.png?size=1024")
 
         em.description = message
         await ctx.send(embed=em)
