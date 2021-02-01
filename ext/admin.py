@@ -192,7 +192,7 @@ class AdminCog(commands.Cog, name="Admin"):
 
 
     @commands.command()
-    @commands.is_owner()
+    @commands.has_any_role('Staff')
     async def changenick(self, ctx, name=None):
         """`ニックネームの管理`"""
         print(f'{ctx.message.author.name}({ctx.message.guild.name})_' +
@@ -204,7 +204,7 @@ class AdminCog(commands.Cog, name="Admin"):
             await ctx.reply("私のニックネームを" + name + "に変更したよ。")
 
     @commands.command(name="dm", aliases=["d", "send"], description="```dmを送る```")
-    @commands.is_owner()
+    @commands.has_any_role('Admin')
     async def dm(self, ctx, user_id: int, *, message: str):
         """`admin`"""
         user = self.bot.get_user(user_id)
@@ -218,7 +218,7 @@ class AdminCog(commands.Cog, name="Admin"):
             await ctx.reply("This user might be having DMs blocked or it's a bot account...")
 
     @commands.is_owner()
-    @commands.command(hidden=True, aliases=['guilds'])
+    @commands.command(aliases=['guilds'])
     async def servers(self, ctx):
         '''Listet die aktuellen verbundenen Guilds auf (BOT OWNER ONLY)'''
         msg = '```js\n'
@@ -228,7 +228,7 @@ class AdminCog(commands.Cog, name="Admin"):
         msg += '```'
         await ctx.reply(msg)
 
-    @commands.has_any_role('Staff')
+    @commands.has_any_role('Admin')
     @commands.command(name="system_shutdown", aliases=["shutdown", "sh"], description="```botを停止します```")
     async def system_shutdown(self, ctx):
         """`admin`"""

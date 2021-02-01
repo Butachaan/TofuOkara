@@ -5,3 +5,6 @@
 __**Hi**__ ```
 I'm Tofu
 ``I'm admin in Zosuserver``
+機能
+-Information
+-Moderation
