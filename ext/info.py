@@ -8,6 +8,7 @@ from typing import Optional
 from typing import Union
 import time
 
+import unicodedata
 import platform
 from discord.ext import commands
 from platform import python_version
@@ -68,16 +69,18 @@ class infoCog(commands.Cog):
         else:
             return string[:1000]  # The maximum allowed charcter amount for embed fields
 
+
+
     @commands.command(name="serverinfo", aliases=["si"], description="```サーバーの情報```")
-    async def serverinfo(self, ctx, *, guild_id: int = None,arg):
+    async def serverinfo(self, ctx, *, guild_id: int = None):
         """カスさんサーバー情報"""
 
         if guild_id is not None and await self.bot.is_owner(ctx.author):
-            guild = self.bot.get_guild(int(arg))
+            guild = self.bot.get_guild(guild_id)
             if guild is None:
                 return await ctx.send(f'Invalid Guild ID given.')
         else:
-            guild = ctx.bot.get_guild(int(arg))
+            guild = ctx.guild
             statuses = [len(list(filter(lambda m: str(m.status) == "online", guild.members))),
                         len(list(filter(lambda m: str(m.status) == "idle", guild.members))),
                         len(list(filter(lambda m: str(m.status) == "dnd", guild.members))),
@@ -134,10 +137,15 @@ class infoCog(commands.Cog):
 
             e.add_field(name='カスタム絵文字', value=emojis, inline=False)
 
-            await ctx.reply(embed=e)
 
-    @commands.command(name="info", description="豆腐botの")
-    async def info(self, ctx):
+
+            await ctx.reply(embed=e)
+    
+
+
+    @commands.command(description="豆腐botの")
+    async def botinfo(self, ctx):
+
 
         """`誰でも`"""
         pythonVersion = platform.python_version()
@@ -463,7 +471,7 @@ class infoCog(commands.Cog):
         except:
             await ctx.reply(embed=e)
 
-    @commands.command(name="channelinfo", aliases=["chinfo", "channel"], description="```チャンネルの情報```")
+    @commands.command(name="channelinfo", description="```チャンネルの情報```")
     async def channelinfo(self, ctx, target=None):
         """`誰でも`"""
         if target is None:

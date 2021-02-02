@@ -9,7 +9,8 @@ import asyncio
 
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix=f.prefix)
+intents = discord.Intents(messages=True, guilds=True)
+bot = commands.Bot(command_prefix=f.prefix, intents=intents)
 
 
 class Help(commands.HelpCommand):
