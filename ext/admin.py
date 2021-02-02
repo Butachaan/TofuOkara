@@ -19,6 +19,8 @@ import traceback
 from contextlib import redirect_stdout
 import asyncio
 
+def check_if_it_is_me(ctx):
+    return ctx.message.author.id == 478126443168006164,691300045454180383
 
 class AdminCog(commands.Cog, name="Admin"):
     """
@@ -43,7 +45,7 @@ class AdminCog(commands.Cog, name="Admin"):
         return content.strip('` \n')
 
     @commands.command(name="load", description="```loadします```")
-    @commands.is_owner()
+    @commands.check(check_if_it_is_me)
     async def load(self, ctx, *, module):
         """`admin`"""
         try:
@@ -94,7 +96,7 @@ class AdminCog(commands.Cog, name="Admin"):
         msg += '```'
         await ctx.send(msg)
 
-    @commands.is_owner()
+    @commands.check(check_if_it_is_me)
     @commands.command(pass_context=True, name='eval')
     async def _eval(self, ctx, *, body: str):
         """Evaluates a code"""

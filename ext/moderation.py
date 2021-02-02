@@ -26,6 +26,7 @@ def to_emoji(c):
     return chr(base + c)
 
 
+
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
