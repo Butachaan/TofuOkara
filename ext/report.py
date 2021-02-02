@@ -38,6 +38,7 @@ class report(commands.Cog, name="report"):
 
     @commands.command(name="request")
     async def request(self,ctx,*, content: str):
+        """`誰でも`"""
         e = discord.Embed(title='request', color=0x00aaff)
         channel = self.bot.get_channel(746519843754344560)
         if channel is None:
