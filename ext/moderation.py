@@ -71,6 +71,8 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_guild_permissions(ban_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
+        """`banの管理` """
+
         await ctx.guild.kick(user=member, reason=reason)
 
         # Using our past episodes knowledge can we make the log channel dynamic?
@@ -87,6 +89,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_guild_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
+        """`banの管理` """
         await ctx.guild.ban(user=member, reason=reason)
 
         # Using our past episodes knowledge can we make the log channel dynamic?
@@ -98,7 +101,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.command(no_pm=True)
     async def banlist(self, ctx):
-        """```banされた人が確認できます``` """
+        """`banの管理` """
         try:
             bans = await ctx.guild.bans()
         except:

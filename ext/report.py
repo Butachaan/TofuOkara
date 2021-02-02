@@ -36,6 +36,7 @@ class report(commands.Cog, name="report"):
         await channel.send(embed=e)
         await ctx.send(f'{ctx.tick(True)} Successfully sent feedback')
 
+
     @commands.command(name="request")
     async def request(self,ctx,*, content: str):
         """`誰でも`"""
