@@ -20,7 +20,7 @@ from contextlib import redirect_stdout
 import asyncio
 
 def check_if_it_is_me(ctx):
-    return ctx.message.author.id == 478126443168006164,691300045454180383
+    return ctx.message.author.id == 478126443168006164
 
 class AdminCog(commands.Cog, name="Admin"):
     """
@@ -171,7 +171,7 @@ class AdminCog(commands.Cog, name="Admin"):
         em.add_field(name="結果", value=f"{discord.Game(game)}に変わりました")
         await ctx.send(embed=em)
 
-    @commands.has_any_role('Staff')
+    @commands.is_owner()
     @commands.command(name="announce", aliases=["ann"], description="お知らせ")
     async def announce(self, ctx, *, message):
         """```admin```"""

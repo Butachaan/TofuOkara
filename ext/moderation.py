@@ -272,27 +272,20 @@ class Moderation(commands.Cog):
         await ctx.channel.purge(limit=messages + 1)
         await ctx.send(f'{messages} messages deleted. 👌', delete_after=3)
 
-    @commands.guild_only()
     @commands.command(name="addrole", aliases=["ar"], description="```ユーザーに役職を付与します```", pass_context=True)
-    async def addrole(self, ctx, member: discord.Member, *, rolename: str):
-        '''`役職の管理`'''
-        role = discord.utils.find(lambda m: rolename.lower() in m.name.lower(), ctx.message.guild.roles)
-        if not role:
-            return await ctx.send('That role does not exist.')
-        try:
-            await member.add_roles(role)
-            await ctx.send(f'Added: `{role.name}`')
-        except:
-            await ctx.send("I don't have the perms to add that role.")
+    @commands.has_permissions(manage_guild=True)
+    async def addrole(self, ctx, member: discord.Member, *, role: discord.Role = None):
 
-    @commands.guild_only()
+        await member.add_roles(role)
+        e = discord.Embed(title="役職付与", description=f'{member.mention} を {role.mention}に付与した', color=0x5d00ff)
+        await ctx.send(embed=e)
+
+    @commands.has_guild_permissions(manage_roles=True)
     @commands.command(name="removerole", aliases=["rr"], description="```ユーザーの役職を剥奪します```", pass_context=True)
-    async def removerole(self, ctx, user: discord.Member, *, role: discord.Role):
-        """`役職の管理`"""
-        if ctx.author.top_role >= user.top_role or ctx.author == ctx.guild.owner:
-            await user.remove_roles(role)
-            msg = await ctx.send(f"Ok, `{role}` was add from {user.mention}")
-            await msg.add_reaction("\N{THUMBS UP SIGN}")
+    async def removerole(self, ctx, member: discord.Member, *, role: discord.Role = None):
+        await member.remove_roles(role)
+        e = discord.Embed(title="役職剥奪", description=f'{member.mention} を {role.mention}から剥奪した', color=0x5d00ff)
+        await ctx.send(embed=e)
 
     @commands.guild_only()
     @commands.command(name="slowmode", aliases=['slowmo'], description="```低速モードを設定します```")
