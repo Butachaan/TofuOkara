@@ -75,6 +75,7 @@ class everyone(commands.Cog):
     @commands.command(name="say", aliases=["echo"], description="```任意の文章を送信します。```")
     async def say(self, ctx, *, arg):
         """`豆腐がしゃべります`"""
+        await ctx.message.delete()
 
         if "<@" in arg or "@everyone" in arg or "@here" in arg:
             await ctx.send("```メンションはしないでください。```")

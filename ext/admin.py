@@ -44,6 +44,22 @@ class AdminCog(commands.Cog, name="Admin"):
         # remove `foo`
         return content.strip('` \n')
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def say_bete(self, ctx, channel, *, message):
+        """Echo a string into a different channel."""
+        """
+        :params channel: channel to echo into
+        :params message: message to echo."""
+        if not ctx.message.channel_mentions:
+            return await ctx.send(
+                f'<command> <channel mention> <message> u idiot')
+        try:
+            for channel in ctx.message.channel_mentions:
+                await channel.send(f'{message}')
+        except Exception:
+            ctx.send('Error when trying to send fam')
+
     @commands.command(name="load", description="```loadします```")
     @commands.check(check_if_it_is_me)
     async def load(self, ctx, *, module):
@@ -194,7 +210,6 @@ class AdminCog(commands.Cog, name="Admin"):
 
 
     @commands.command()
-    @commands.has_any_role('Staff')
     async def changenick(self, ctx, name=None):
         """`ニックネームの管理`"""
         print(f'{ctx.message.author.name}({ctx.message.guild.name})_' +

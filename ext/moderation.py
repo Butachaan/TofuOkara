@@ -280,7 +280,7 @@ class Moderation(commands.Cog):
         e = discord.Embed(title="役職付与", description=f'{member.mention} を {role.mention}に付与した', color=0x5d00ff)
         await ctx.send(embed=e)
 
-    @commands.has_guild_permissions(manage_roles=True)
+    @commands.has_permissions(manage_guild=True)
     @commands.command(name="removerole", aliases=["rr"], description="```ユーザーの役職を剥奪します```", pass_context=True)
     async def removerole(self, ctx, member: discord.Member, *, role: discord.Role = None):
         await member.remove_roles(role)

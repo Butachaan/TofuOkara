@@ -1,3 +1,4 @@
+
 import discord
 import config as f
 import json
@@ -6,11 +7,20 @@ import logging
 import textwrap
 
 import asyncio
+import random
+import datetime
+import DiscordUtils
 
 from discord.ext import commands
+Intents = discord.Intents.all()
+with open(f"config.json","r",encoding="utf-8") as j:
+    f = json.load(j)
 
-intents = discord.Intents(messages=True, guilds=True)
-bot = commands.Bot(command_prefix=f.prefix, intents=intents)
+
+bot = commands.Bot(command_prefix=f["prefix"],owner_id=478126443168006164,Intents=Intents)
+
+
+
 
 
 class Help(commands.HelpCommand):
@@ -107,7 +117,7 @@ class Help(commands.HelpCommand):
         return f"{command.qualified_name} にサブコマンドは登録されていません。"
 
 
-bot = commands.Bot(command_prefix="to:", help_command=Help(), description="```y/helps で調べられます``` ")
+bot = commands.Bot(command_prefix="to:", help_command=Help(), description="```to:helps で調べられます``` ")
 
 
 
@@ -119,16 +129,246 @@ bot.load_extension('ext.moderation')
 bot.load_extension('ext.report')
 bot.load_extension('ext.fun')
 bot.load_extension('ext.help')
-bot.load_extension('jishaku')
+bot.remove_command('help')
 
-developer = f.bot_developers
+bot.load_extension("jishaku")
+@bot.event
+async def on_command(ctx):
+    e = discord.Embed(title="コマンド実行ログ", description=f"実行分:`{ctx.message.clean_content}`")
+    e.set_author(name=f"{ctx.author}({ctx.author.id})", icon_url=ctx.author.avatar_url_as(static_format="png"))
+    e.add_field(name="実行サーバー", value=f"{ctx.guild.name}({ctx.guild.id})")
+    e.add_field(name="実行チャンネル", value=ctx.channel.name)
+    e.set_thumbnail(url=ctx.guild.icon_url)
+    e.timestamp = ctx.message.created_at
+    ch = bot.get_channel(803558816834650152)
+
+    await ch.send(embed=e)
+
 
 @bot.event
 async def on_ready():
-    activity = discord.Game(name=f"to:helpsで確認{f.admin}何かあれば{developer}まで", type=3)
+    activity = discord.Game(name="to:helpsで確認", type=3)
     await bot.change_presence(status=discord.Status.idle, activity=activity)
     print("Bot is ready!")
 
 
 
-bot.run(f.TOKEN)
+@bot.event
+async def on_user_update(before, after):
+    if before.name != after.name:
+        e = discord.Embed(title="ニックネームが変わりました", color=0x5d00ff, timestamp=datetime.utcnow())
+        fields = [("Before", before.name, False), ("After", after.name, False)]
+
+        for name, value, inline in fields:
+            e.add_field(name=name, value=value, inline=inline)
+
+        channel = discord.utils.get(before.get_channels, name="幽々子ログ")
+        await channel.send(embed=e)
+
+
+@bot.event
+async def on_guild_channel_create(channel):
+    e = discord.Embed(title="チャンネル作成", timestamp=channel.created_at,color=0x5d00ff)
+    e.add_field(name="チャンネル名", value=channel.mention)
+    channel = discord.utils.get(channel.guild.channels, name="幽々子ログ")
+    await channel.send(embed=e)
+
+@bot.event
+async def on_member_ban(g, user):
+    guild = bot.get_guild(g.id)
+    bl = await guild.audit_logs(limit=1, action=discord.AuditLogAction.ban).flatten()
+    e = discord.Embed(title="ユーザーのban", color=0x5d00ff)
+    e.add_field(name="ユーザー名", value=str(user))
+    e.add_field(name="実行者", value=str(bl[0].user))
+    channel = discord.utils.get(bot.get.channels, name="幽々子ログ")
+    await channel.send(embed=e)
+
+@bot.event
+async def on_invite_create(invite):
+    e = discord.Embed(title="サーバー招待の作成", color=0x5d00ff)
+    e.add_field(name="作成ユーザー", value=str(invite.inviter))
+    e.add_field(name="使用可能回数", value=str(invite.max_uses))
+    e.add_field(name="使用可能時間", value=str(invite.max_age))
+    e.add_field(name="チャンネル", value=str(invite.channel.mention))
+    e.add_field(name="コード", value=str(invite.code))
+    channel = discord.utils.get(invite.guild.channels, name="幽々子ログ")
+    await channel.send(embed=e)
+
+
+
+
+@bot.event
+async def on_message_delete(message):
+    if not message.author.bot:
+        e = discord.Embed(title="メッセージ削除", color=0x5d00ff)
+        e.add_field(name="メッセージ", value=f'```{message.content}```',inline=False)
+        e.add_field(name="メッセージ送信者", value=message.author.mention)
+        e.add_field(name="メッセージチャンネル", value=message.channel.mention)
+        e.add_field(name="メッセージのid", value=message.id)
+
+        channel = discord.utils.get(message.guild.channels, name="幽々子ログ")
+        await channel.send(embed=e)
+
+@bot.event
+async def on_guild_role_update(before, after):
+    print("1")
+    if before.name != after.name:
+        embed = discord.Embed(title="Role " + before.name + " renamed to " + after.name + ".",color=0x5d00ff)
+
+        embed.set_author(name="名前が変りました")
+        embed.add_field(name="id",value=after.id)
+        embed.add_field(name="名前",value=after.name)
+        embed.add_field(name="位置", value=after.position)
+        channel = discord.utils.get(before.guild.channels, name="幽々子ログ")
+        await channel.send(embed=embed)
+
+    if before.color != after.color:
+        e = discord.Embed(title="Role " + before.name + " change to " + after.name + ".",color=0x5d00ff)
+        e.set_author(name="色が変りました")
+        e.add_field(name="id", value=after.id)
+        e.add_field(name="名前", value=after.name)
+        e.add_field(name="位置",value=after.position)
+        channel = discord.utils.get(before.guild.channels, name="幽々子ログ")
+        await channel.send(embed=e)
+
+
+@bot.event
+async def on_message_edit(before, after):
+
+    embed = discord.Embed(
+        title="メッセージが編集されました",
+        timestamp=after.created_at,
+        description = f"<#{before.channel.id}>で<@!{before.author.id}>がメッセージを編集しました",
+        colour = discord.Colour(0x5d00ff)
+        )
+    embed.set_author(name=f'{before.author.name}#{before.author.discriminator}', icon_url=before.author.avatar_url)
+    embed.set_footer(text=f"Author ID:{before.author.id} • Message ID: {before.id}")
+    embed.add_field(name='Before:', value=before.content, inline=False)
+    embed.add_field(name="After:", value=after.content, inline=False)
+    embed.add_field(name="メッセージのURL", value=after.jump_url)
+    channel = discord.utils.get(after.guild.channels, name="幽々子ログ")
+    await channel.send(embed=embed)
+
+
+
+
+@bot.event
+async def on_guild_role_create(role):
+    e = discord.Embed(title="役職の作成", color=0x5d00ff,timestamp=role.created_at)
+    e.add_field(name="役職名", value=role.name)
+
+    e.add_field(name="id", value=role.id)
+
+    ch = discord.utils.get(role.guild.channels, name="幽々子ログ")
+    await ch.send(embed=e)
+
+@bot.event
+async def on_guild_role_delete(role):
+    e = discord.Embed(title="役職の削除", color=0x5d00ff)
+    e.add_field(name="役職名", value=role.name)
+
+    ch = discord.utils.get(role.guild.channels, name="幽々子ログ")
+    await ch.send(embed=e)
+
+
+@bot.event
+async def on_guild_channel_delete(channel):
+    e = discord.Embed(title="チャンネル削除", color=0x5d00ff)
+    e.add_field(name="チャンネル名", value=channel.name)
+    ch = discord.utils.get(channel.guild.channels, name="幽々子ログ")
+    await ch.send(embed=e)
+
+
+
+
+@bot.event
+async def on_guild_channel_update(before, after):
+    channel = discord.utils.get(before.guild.channels, name="幽々子ログ")
+    embed = discord.Embed(title="Channel Name Updated", description="チャンネルがアップデートしました",color=0x5d00ff)
+    embed.add_field(name="Old name", value=f"The old name was: {before}.", inline=True)
+    embed.add_field(name="New name", value=f"The old name was: {after}.", inline=False)
+    await channel.send(embed=embed)
+
+@bot.event
+async def on_voice_state_update(before, after):
+    if before.voice.voice_channel is None and after.voice.voice_channel is not None:
+        for channel in before.server.channels:
+            if channel.name == 'あざ':
+                await bot.send_message(channel, "Howdy")
+
+
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.MissingPermissions):
+        e1 = discord.Embed(title="権限がありません")
+        await ctx.send(embed=e1)
+        await ctx.message.delete()
+    elif isinstance(error,commands.MissingRequiredArgument):
+        e2 = discord.Embed(title="必要なすべての引数を入力してください")
+        await ctx.send(embed=e2)
+        await ctx.message.delete()
+    elif isinstance(error, commands.CommandNotFound):
+        e3 = discord.Embed(title="コマンドが存在しません")
+        await ctx.send(embed=e3)
+        await ctx.message.delete()
+    elif isinstance(error, commands.ChannelNotFound):
+        e4 = discord.Embed(title="チャンネルが存在しません")
+        await ctx.send(embed=e4)
+        await ctx.message.delete()
+    elif isinstance(error, commands.UserNotFound):
+        e5 = discord.Embed(title="ユーザーが存在しません")
+        await ctx.send(embed=e5)
+        await ctx.message.delete()
+
+    elif isinstance(error,commands.RoleNotFound):
+        e6 = discord.Embed(title="役職が存在しません")
+        await ctx.send(embed=e6)
+        await ctx.message.delete()
+
+
+
+
+@bot.event
+async def on_member_join(member):
+    # On member joins we find a channel called general and if it exists,
+    # send an embed welcoming them to our guild
+    channel = discord.utils.get(member.guild.text_channels, name="幽々子ログ")
+    if channel:
+        embed = discord.Embed(
+            description="Welcome to our guild!",
+            color=0x5d00ff,
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_author(name=member.name, icon_url=member.avatar_url)
+        embed.set_footer(text=member.guild, icon_url=member.guild.icon_url)
+        embed.timestamp = datetime.datetime.utcnow()
+
+        await channel.send(embed=embed)
+
+
+
+@bot.event
+async def on_member_remove(member):
+    # On member remove we find a channel called general and if it exists,
+    # send an embed saying goodbye from our guild-
+    channel = discord.utils.get(member.guild.text_channels, name="recording")
+    if channel:
+        embed = discord.Embed(
+            description="Goodbye from all of us..",
+            color=0x5d00ff,
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_author(name=member.name, icon_url=member.avatar_url)
+        embed.set_footer(text=member.guild, icon_url=member.guild.icon_url)
+        embed.timestamp = datetime.datetime.utcnow()
+
+        await channel.send(embed=embed)
+
+
+
+bot.run(f["TOKEN"])
+
+
+

@@ -205,8 +205,19 @@ class infoCog(commands.Cog):
             e.add_field(name="voice", value="入っていません")
 
         e.add_field(name="ニックネーム", value=user.display_name)
-        e.add_field(name="bot?", value=user.bot)
-        e.add_field(name="ブースト!", value=bool(user.premium_since), inline=True)
+
+        if user.bot:
+            e.add_field(name="Botですか",value="はい")
+        else:
+            e.add_field(name="Botですか", value="いいえ")
+
+
+        if bool(user.premium_since):
+            e.add_field(name="ブースト？",value="してます")
+        else:
+            e.add_field(name="ブースト",value="してない")
+
+
 
         e.add_field(name="Discord参加日:", value=created_at, inline=True)
         e.add_field(name="サーバー参加日", value=joined_at, inline=True)
@@ -229,8 +240,6 @@ class infoCog(commands.Cog):
         await ctx.reply(embed=e)
 
         e = discord.Embed(color=0xb300ff)
-        if isinstance(user, discord.Member):
-            e.add_field(name='権限', value=perms)
 
         await ctx.send(embed=e)
 

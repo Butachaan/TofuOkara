@@ -4,7 +4,7 @@ import typing
 import aiohttp
 from datetime import datetime, timedelta
 from typing import Optional
-
+import DiscordUtils
 from typing import Union
 import time
 
@@ -38,17 +38,16 @@ import wikipedia
 import io
 from contextlib import redirect_stdout
 import re
-import DiscordUtils
-import tracemalloc
 
+import tracemalloc
 
 class help(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self,bot):
         self.bot = bot
 
     @commands.command()
-    async def helps(self, ctx):
+    async def helps(self,ctx):
         e1 = discord.Embed(title="Helpメニュー", description="`to:help <コマンド>`で確認できます\n```接頭辞:to:```",
                            color=0x5d00ff).add_field(name="`豆腐ログ`というチャンネルを使うと自動でログチャンネルになります`", value="Page 1")
         e1.set_thumbnail(
@@ -122,7 +121,6 @@ class help(commands.Cog):
         paginator.add_reaction('⏭️', "last")
         embeds = [e1, e2, e3, e4, e5, e6, e7]
         await paginator.run(embeds)
-
 
 def setup(bot):
     bot.add_cog(help(bot))
